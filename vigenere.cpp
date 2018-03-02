@@ -1,14 +1,19 @@
-// Require C++ >= 11 to compile 
+// Require C++ >= 11 to compile
 
 #include <iostream>
 #include <algorithm>
 #include <string>
 #include <cctype>
 
+bool isAlpha(char ch)
+{
+    return ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z'));
+}
+
 bool isAlphaOnly(std::string input)
 {
     for (auto itr : input)
-        if (!((itr >= 'A' && itr <= 'Z') || (itr >= 'a' && itr <= 'z')))
+        if (!isAlpha(itr))
             return false;
     return true;
 }
@@ -49,16 +54,20 @@ char divine(char ch1, char ch2)
 std::string encode(std::string input, std::string key)
 {
     std::transform(key.begin(), key.end(), key.begin(), ::toupper);
-    for (auto itr = 0; itr < input.size(); itr++)
-        input[itr] = combine(input[itr], key[itr % key.size()]);
+    auto k = 0;
+    for (auto &itr : input)
+        if (isAlpha(itr))
+            itr = combine(itr, key[k++ % key.size()]);
     return input;
 }
 
 std::string decode(std::string input, std::string key)
 {
     std::transform(key.begin(), key.end(), key.begin(), ::toupper);
-    for (auto itr = 0; itr < input.size(); itr++)
-        input[itr] = divine(input[itr], key[itr % key.size()]);
+    auto k = 0;
+    for (auto &itr : input)
+        if (isAlpha(itr))
+            itr = divine(itr, key[k++ % key.size()]);
     return input;
 }
 
@@ -67,10 +76,10 @@ int main(int argc, char *argv[])
     if (argc == 1)
     {
         std::cout << "vigenere <command> [input] [key]" << std::endl
-                    << std::endl
-                    << "<command>" << std::endl
-                    << "e\tEncode string [input] with string [key]" << std::endl
-                    << "d\tDecrypt string [input] with string [key]" << std::endl;
+                  << std::endl
+                  << "<command>" << std::endl
+                  << "e\tEncode string [input] with string [key]" << std::endl
+                  << "d\tDecrypt string [input] with string [key]" << std::endl;
         return 0;
     }
 
@@ -84,11 +93,6 @@ int main(int argc, char *argv[])
     std::string input = argv[2];
     std::string key = argv[3];
 
-    if (!isAlphaOnly(input))
-    {
-        std::cout << "[input] contain irregular character(s)" << std::endl;
-        return 1;
-        }        
     if (!isAlphaOnly(key))
     {
         std::cout << "[key] contain irregular character(s)" << std::endl;
