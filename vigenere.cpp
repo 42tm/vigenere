@@ -5,15 +5,10 @@
 #include <string>
 #include <cctype>
 
-bool isAlpha(char ch)
-{
-    return ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z'));
-}
-
 bool isAlphaOnly(std::string input)
 {
     for (auto itr : input)
-        if (!isAlpha(itr))
+        if (!isalpha(itr))
             return false;
     return true;
 }
@@ -53,20 +48,18 @@ char divine(char ch1, char ch2)
 
 std::string encode(std::string input, std::string key)
 {
-    std::transform(key.begin(), key.end(), key.begin(), ::toupper);
     auto k = 0;
     for (auto &itr : input)
-        if (isAlpha(itr))
+        if (isalpha(itr))
             itr = combine(itr, key[k++ % key.size()]);
     return input;
 }
 
 std::string decode(std::string input, std::string key)
 {
-    std::transform(key.begin(), key.end(), key.begin(), ::toupper);
     auto k = 0;
     for (auto &itr : input)
-        if (isAlpha(itr))
+        if (isalpha(itr))
             itr = divine(itr, key[k++ % key.size()]);
     return input;
 }
@@ -92,6 +85,7 @@ int main(int argc, char *argv[])
     std::string cmd = argv[1];
     std::string input = argv[2];
     std::string key = argv[3];
+    std::transform(key.begin(), key.end(), key.begin(), ::toupper);
 
     if (!isAlphaOnly(key))
     {
