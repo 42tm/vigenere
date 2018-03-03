@@ -5,7 +5,7 @@
 #include <string>
 #include <cctype>
 
-bool isAlphaOnly(std::string input)
+bool isAlphaOnly(const std::string input)
 {
     for (auto itr : input)
         if (!isalpha(itr))
@@ -13,7 +13,7 @@ bool isAlphaOnly(std::string input)
     return true;
 }
 
-int CharToInt(char ch)
+int CharToInt(const char ch)
 {
     if (ch >= 'A' && ch <= 'Z')
         return (ch - 'A');
@@ -23,7 +23,7 @@ int CharToInt(char ch)
         return -1;
 }
 
-char IntToChar(int i, bool isUpper = true)
+char IntToChar(const int i, bool isUpper = true)
 {
     if (i >= 0 && i < 26)
         return (isUpper ? (i + 'A') : (i + 'a'));
@@ -38,7 +38,7 @@ char combine(char ch1, char ch2)
     return IntToChar(ans, isupper(ch1));
 }
 
-char divine(char ch1, char ch2)
+char divide(char ch1, char ch2)
 {
     int ans = CharToInt(ch1) - CharToInt(ch2);
     if (ans < 0)
@@ -46,21 +46,21 @@ char divine(char ch1, char ch2)
     return IntToChar(ans, isupper(ch1));
 }
 
-std::string encode(std::string input, std::string key)
+std::string encrypt(std::string input, const std::string key)
 {
-    auto k = 0;
+    long k = 0;
     for (auto &itr : input)
         if (isalpha(itr))
-            itr = combine(itr, key[k++ % key.size()]);
+            itr = combine(itr, key[(k++) % key.size()]);
     return input;
 }
 
-std::string decode(std::string input, std::string key)
+std::string decrypt(std::string input, const std::string key)
 {
-    auto k = 0;
+    long k = 0;
     for (auto &itr : input)
         if (isalpha(itr))
-            itr = divine(itr, key[k++ % key.size()]);
+            itr = divide(itr, key[(k++) % key.size()]);
     return input;
 }
 
@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
         std::cout << "vigenere <command> [input] [key]" << std::endl
                   << std::endl
                   << "<command>" << std::endl
-                  << "e\tEncode string [input] with string [key]" << std::endl
+                  << "e\tEncrypt string [input] with string [key]" << std::endl
                   << "d\tDecrypt string [input] with string [key]" << std::endl;
         return 0;
     }
@@ -85,6 +85,7 @@ int main(int argc, char *argv[])
     std::string cmd = argv[1];
     std::string input = argv[2];
     std::string key = argv[3];
+    // Standardized [key] string
     std::transform(key.begin(), key.end(), key.begin(), ::toupper);
 
     if (!isAlphaOnly(key))
@@ -92,9 +93,10 @@ int main(int argc, char *argv[])
         std::cout << "[key] contain irregular character(s)" << std::endl;
         return 1;
     }
+
     if (cmd == "e")
-        std::cout << encode(input, key);
+        std::cout << encrypt(input, key);
     if (cmd == "d")
-        std::cout << decode(input, key);
+        std::cout << decrypt(input, key);
     return 0;
 }
