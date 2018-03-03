@@ -1,5 +1,5 @@
 # vigenere
-Encode/Decode String with Key using Vigenère cipher
+Encrypt/Decrypt string with key using Vigenère cipher
 
 ## Usage
 Using **vigenere** is really simple. Below is how program read parameters:
