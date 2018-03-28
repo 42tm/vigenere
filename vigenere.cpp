@@ -74,9 +74,8 @@ int main(int argc, char *argv[])
                   << "e\tEncrypt string [input] with string [key]" << std::endl
                   << "d\tDecrypt string [input] with string [key]" << std::endl;
         return 0;
-    }
-
-    if (argc < 4)
+    } 
+    else if (argc != 4)
     {
         std::cout << "Wrong parameter(s)" << std::endl;
         return 1;
@@ -94,9 +93,15 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    if (key.length() < 2)
+    {
+        std::cout << "[key] is too short" << std::endl;
+        return 1;
+    }
+
     if (cmd == "e")
         std::cout << encrypt(input, key);
-    if (cmd == "d")
+    else if (cmd == "d")
         std::cout << decrypt(input, key);
     return 0;
 }
